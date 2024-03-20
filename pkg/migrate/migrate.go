@@ -3,6 +3,7 @@ package migrate
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/edward-/four-in-a-row-game/pkg/config"
 
@@ -17,9 +18,12 @@ var migrationFolder = "file://./migrations"
 
 func Up() error {
 	m := build()
+	path, _ := os.Getwd()
+	log.Println(path)
 
 	err := m.Up()
 	if err != nil {
+		log.Println(err.Error())
 		panic(err)
 	}
 	fmt.Println("migration UP completed")
@@ -29,13 +33,13 @@ func Up() error {
 
 func Down() error {
 	m := build()
-	
+
 	err := m.Up()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("migration DOWN completed")
-	
+
 	return err
 }
 

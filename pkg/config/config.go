@@ -9,8 +9,9 @@ import (
 
 type (
 	Config struct {
-		App App
-		Db  Db
+		App   App
+		Db    Db
+		Cache Cache
 	}
 
 	App struct {
@@ -26,14 +27,26 @@ type (
 		SSLMode  string
 		TimeZone string
 	}
+
+	Cache struct {
+		Host         string
+		Port         int
+		Password     string
+		Db           int
+		Protocol     int
+		MinIdleConns int
+		PoolSize     int
+		PoolTimeout  int
+	}
 )
 
 func GetConfig() Config {
 	configFileName := getConfigFileName()
+	configFolderLocation := getConfigFolder()
 
 	viper.SetConfigName(configFileName)
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./")
+	viper.AddConfigPath(configFolderLocation)
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -53,7 +66,25 @@ func GetConfig() Config {
 			SSLMode:  viper.GetString("database.sslmode"),
 			TimeZone: viper.GetString("database.timezone"),
 		},
+		Cache: Cache{
+			Host:         viper.GetString("cache.host"),
+			Port:         viper.GetInt("cache.port"),
+			Password:     viper.GetString("cache.password"),
+			Db:           viper.GetInt("cache.db"),
+			Protocol:     viper.GetInt("cache.protocol"),
+			MinIdleConns: viper.GetInt("cache.minIdleConns"),
+			PoolSize:     viper.GetInt("cache.poolSize"),
+			PoolTimeout:  viper.GetInt("cache.poolTimeout"),
+		},
 	}
+}
+
+func getConfigFolder() string {
+	configFolder := os.Getenv("CONFIG_FOLDER")
+	if configFolder == "" {
+		return "./config"
+	}
+	return configFolder
 }
 
 func getConfigFileName() string {
@@ -62,11 +93,13 @@ func getConfigFileName() string {
 	switch env {
 	case "prod":
 		return "config.production"
-	case "development":
-		return "config.development"
+	case "dev":
+		return "config.dev"
 	case "test":
 		return "config.test"
+	case "docker":
+		return "config.docker"
 	default:
-		return "config.development"
+		return "config.dev"
 	}
 }

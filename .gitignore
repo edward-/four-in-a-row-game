@@ -1,3 +1,5 @@
-.config.prod.yaml
-.config.staging.yaml
-.config.yaml
+.idea
+.vscode
+config/config.prod.yaml
+config/config.staging.yaml
+config/config.yaml

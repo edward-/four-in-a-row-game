@@ -1,0 +1,22 @@
+app:
+  server:
+    port: 8080
+
+database:
+  host: localhost
+  port: 5432
+  user: rowgame
+  password: rowgame
+  dbname: rowgame_test
+  sslmode: disable
+  timezone: UTC
+
+cache:
+  host: localhost
+  port: 6379
+  password: crwh1xQGB4s1edByiB0G
+  db: 0
+  protocol: 3
+  minIdleConns: 200
+  poolSize: 12000
+  poolTimeout: 240

@@ -1,2 +1,0 @@
-CREATE DATABASE IF NOT EXISTS rowgame_test;
-CREATE DATABASE IF NOT EXISTS rowgame_development;

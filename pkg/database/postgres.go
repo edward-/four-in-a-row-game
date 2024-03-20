@@ -26,7 +26,7 @@ func NewPostgresDatabase(cfg *config.Config) Database {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic(fmt.Sprintf("failed to connect database, dns: %s /t error: %s", dsn, err.Error()))
 	}
 
 	return &postgresDatabase{Db: db}

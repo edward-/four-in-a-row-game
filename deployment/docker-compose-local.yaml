@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=rowgame
+      - POSTGRES_PASSWORD=rowgame
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres-database:/data/postgres
+      - ./scripts:/docker-entrypoint-initdb.d
+
+  cache:
+    image: redis:7.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass crwh1xQGB4s1edByiB0G
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 10
+    volumes: 
+      - redis-cache:/data/redis
+
+  game:
+    build:
+      context: ../
+      dockerfile: deployment/Dockerfile
+    restart: always
+    ports:
+      - '8080:8080' # Adjust the port to match the port your app listens on
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    links:
+      - postgres
+      - cache
+    environment:
+      - GO_ENVIRONMENT=docker
+      - POSTGRES_USER=rowgame
+      - POSTGRES_PASSWORD=rowgame
+      - POSTGRES_DB=rowgame
+      - POSTGRES_HOST=postgres
+      - REDIS_PASSWORD=crwh1xQGB4s1edByiB0G
+      - REDIS_HOST=cache
+
+volumes:
+  redis-cache:
+    driver: local
+  postgres-database:
+    driver: local

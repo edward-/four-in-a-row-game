@@ -2,36 +2,46 @@ package logger
 
 import (
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
-type Logger interface{
+type Logger interface {
 	Debug(string)
 	Info(string)
 	Warn(string)
-	Error(string)
+	Error(error, string)
+	Fatal(error, string, string)
 }
 
-type logger struct{}
+type logger struct {
+	log zerolog.Logger
+}
 
 func NewLogger() Logger {
+	l := setup()
 	logger := new(logger)
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	logger.log = l
 	return logger
 }
 
 func (l *logger) Debug(msg string) {
-	log.Debug().Msg(msg)
+	l.log.Debug().Msg(msg)
 }
 
 func (l *logger) Info(msg string) {
-	log.Info().Msg(msg)
+	l.log.Info().Msg(msg)
 }
 
 func (l *logger) Warn(msg string) {
-	log.Warn().Msg(msg)
+	l.log.Warn().Msg(msg)
 }
 
-func (l *logger) Error(msg string) {
-	log.Error().Msg(msg)
+func (l *logger) Error(err error, msg string) {
+	l.log.Err(err).Msg(msg)
+}
+
+func (l *logger) Fatal(err error, service string, msg string) {
+	l.log.Fatal().
+		Err(err).
+		Str("service", service).
+		Msgf("Fatal error: %s", service)
 }

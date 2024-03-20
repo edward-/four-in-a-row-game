@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func SetCorrelationUUIDMiddleware() gin.HandlerFunc {
+func SetCorrelationId() gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
 		CorrelationID := uuid.NewString()
 

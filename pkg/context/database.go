@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetDatabase(ctx context.Context) *gorm.DB {
+func DatabaseFromCtx(ctx context.Context) *gorm.DB {
 	return ctx.Value(databaseKey).(*gorm.DB)
 }
 
