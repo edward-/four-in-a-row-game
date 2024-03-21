@@ -25,12 +25,14 @@ test:
 	go clean -testcache
 	GO_ENVIRONMENT=test CONFIG_FOLDER=../../../config go test -v ./internal/tests/integration/...
 
-compose-up:
+compose-app-up:
 	docker-compose -f ./deployment/docker-compose-local.yaml -p four_in_a_row_game up
 
-compose-down:
+compose-app-down:
 	docker-compose -f ./deployment/docker-compose-local.yaml -p four_in_a_row_game down
 
-docker:
-	docker build . --tag 'game' -f deployment/Dockerfile
-	docker run game
+compose-up:
+	docker-compose -f ./deployment/docker-compose.yaml -p four_in_a_row_game up
+
+compose-down:
+	docker-compose -f ./deployment/docker-compose.yaml -p four_in_a_row_game down

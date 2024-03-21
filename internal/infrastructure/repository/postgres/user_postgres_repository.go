@@ -4,14 +4,16 @@ import (
 	"context"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
+	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/postgres/model"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
+
 	"github.com/pkg/errors"
 )
 
 type userRepository struct{}
 
-func NewUserRepository() UserRepository {
+func NewUserRepository() repository.UserRepository {
 	return &userRepository{}
 }
 

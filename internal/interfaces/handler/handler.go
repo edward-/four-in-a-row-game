@@ -5,6 +5,7 @@ import (
 )
 
 type Handler interface {
+	Ping(ctx *gin.Context)
 	CreateUser(ctx *gin.Context)
 	CreateGame(ctx *gin.Context)
 	GetBoardGame(ctx *gin.Context)

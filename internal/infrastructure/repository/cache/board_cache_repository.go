@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
+	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/cache/model"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
 	"github.com/pkg/errors"
@@ -13,7 +14,7 @@ import (
 
 type boardRepository struct{}
 
-func NewBoardRepository() BoardRepository {
+func NewBoardRepository() repository.BoardRepository {
 	return &boardRepository{}
 }
 

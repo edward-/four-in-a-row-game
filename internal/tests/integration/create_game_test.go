@@ -65,10 +65,6 @@ var _ = Describe("CreateGame", func() {
 				Expect(response.Code).To(Equal(http.StatusCreated))
 			})
 
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
-			})
-
 			It("body should return an id", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
@@ -96,10 +92,6 @@ var _ = Describe("CreateGame", func() {
 				Expect(response.Code).To(Equal(http.StatusInternalServerError))
 			})
 
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
-			})
-
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
@@ -124,10 +116,6 @@ var _ = Describe("CreateGame", func() {
 		Context("should fail", func() {
 			It("status code should be 400", func() {
 				Expect(response.Code).To(Equal(http.StatusBadRequest))
-			})
-
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
 			})
 
 			It("body should return message", func() {

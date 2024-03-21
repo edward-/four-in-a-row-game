@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
-	valueobject "github.com/edward-/four-in-a-row-game/internal/domain/value_object"
+	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
+	vo "github.com/edward-/four-in-a-row-game/internal/domain/value_object"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/postgres/model"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
 
@@ -16,7 +17,7 @@ type gameRepository struct {
 	table string
 }
 
-func NewGameRepository() GameRepository {
+func NewGameRepository() repository.GameRepository {
 	return &gameRepository{
 		table: "games",
 	}
@@ -71,16 +72,16 @@ func (u *gameRepository) CreateGame(ctx context.Context, gameDTO *entity.CreateG
 	return game.Id, nil
 }
 
-func (u *gameRepository) UpdateResult(ctx context.Context, gameId string, result *entity.ResponseTurnDTO) error {
+func (u *gameRepository) UpdateResult(ctx context.Context, gameId string, result *entity.ResultTurnDTO) error {
 	db := contextPkg.DatabaseFromCtx(ctx)
 	log := contextPkg.LoggerFromCtx(ctx)
 
 	game := &model.Game{}
 
-	if result.Resolution == valueobject.Resolution_Winner {
+	if result.Resolution == vo.Resolution_Winner {
 		game.WinnerId = &result.UserId
 	}
-	if result.Resolution == valueobject.Resolution_Tie {
+	if result.Resolution == vo.Resolution_Tie {
 		game.IsTie = true
 	}
 	completedAt := time.Now()

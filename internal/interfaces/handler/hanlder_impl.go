@@ -2,9 +2,9 @@ package handler
 
 import (
 	"context"
+	usecase2 "github.com/edward-/four-in-a-row-game/internal/domain/usecase"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
-	"github.com/edward-/four-in-a-row-game/internal/usecase"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
 	httpPkg "github.com/edward-/four-in-a-row-game/pkg/http"
 	"github.com/gin-gonic/gin"
@@ -12,15 +12,15 @@ import (
 
 type handler struct {
 	ctx          context.Context
-	userUsecase  usecase.UserUsecase
-	gameUsecase  usecase.GameUsecase
-	boardUsecase usecase.BoardUsecase
+	userUsecase  usecase2.UserUsecase
+	gameUsecase  usecase2.GameUsecase
+	boardUsecase usecase2.BoardUsecase
 }
 
 func NewHandler(ctx context.Context,
-	userUsecase usecase.UserUsecase,
-	gameUsecase usecase.GameUsecase,
-	boardUsecase usecase.BoardUsecase,
+	userUsecase usecase2.UserUsecase,
+	gameUsecase usecase2.GameUsecase,
+	boardUsecase usecase2.BoardUsecase,
 ) Handler {
 	return &handler{
 		ctx:          ctx,
@@ -28,6 +28,11 @@ func NewHandler(ctx context.Context,
 		gameUsecase:  gameUsecase,
 		boardUsecase: boardUsecase,
 	}
+}
+
+func (h *handler) Ping(c *gin.Context) {
+	response := httpPkg.NewResponse(c)
+	response.ResposeOKWithJSON(gin.H{"response": "pong"})
 }
 
 func (h *handler) CreateUser(c *gin.Context) {

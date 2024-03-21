@@ -2,11 +2,12 @@ package message
 
 import (
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
+	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
 )
 
 type message struct{}
 
-func NewNotifyMessage() Message {
+func NewNotifyMessage() repository.Message {
 	return &message{}
 }
 

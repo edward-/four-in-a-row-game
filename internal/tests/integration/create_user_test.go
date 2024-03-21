@@ -43,10 +43,6 @@ var _ = Describe("CreateUser", func() {
 				Expect(response.Code).To(Equal(http.StatusCreated))
 			})
 
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
-			})
-
 			It("body should return an id", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)

@@ -21,11 +21,11 @@ func GameIsAvailableToPlay(game *entity.GameDTO) error {
 	}
 }
 
-func IsGameOver(response *entity.ResponseTurnDTO) bool {
+func IsGameOver(response *entity.ResultTurnDTO) bool {
 	return response.Resolution == vo.Resolution_Winner || response.Resolution == vo.Resolution_Tie
 }
 
-func IsNext(response *entity.ResponseTurnDTO) bool {
+func IsNext(response *entity.ResultTurnDTO) bool {
 	return response.Resolution == vo.Resolution_Next
 }
 

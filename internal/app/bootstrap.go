@@ -2,14 +2,13 @@ package app
 
 import (
 	"context"
+	usecase2 "github.com/edward-/four-in-a-row-game/internal/domain/usecase"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/service"
-	"github.com/edward-/four-in-a-row-game/internal/handler"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/cache"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/message"
 	"github.com/edward-/four-in-a-row-game/internal/infrastructure/repository/postgres"
-	"github.com/edward-/four-in-a-row-game/internal/usecase"
-
+	"github.com/edward-/four-in-a-row-game/internal/interfaces/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,12 +20,13 @@ func Bootstrap(ctx context.Context) *gin.Engine {
 	notifyMessage := message.NewNotifyMessage()
 	boardService := service.NewBoardService()
 
-	userUseCase := usecase.NewUserUsecase(userRepository, notifyMessage)
-	gameUseCase := usecase.NewGameUsecase(userRepository, gameRepository, boardRepository, notifyMessage)
-	boardUseCase := usecase.NewBoardUsecase(gameRepository, boardRepository, boardService, notifyMessage)
+	userUseCase := usecase2.NewUserUsecase(userRepository, notifyMessage)
+	gameUseCase := usecase2.NewGameUsecase(userRepository, gameRepository, boardRepository, notifyMessage)
+	boardUseCase := usecase2.NewBoardUsecase(gameRepository, boardRepository, boardService, notifyMessage)
 
 	h := handler.NewHandler(ctx, userUseCase, gameUseCase, boardUseCase)
 
+	router.GET("/ping", h.Ping)
 	v1 := router.Group("v1")
 	v1.POST("/users", h.CreateUser)
 	v1.POST("/games", h.CreateGame)

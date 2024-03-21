@@ -31,14 +31,32 @@ services:
     volumes: 
       - redis-cache:/data/redis
 
-  game:
+  migrate:
+    build:
+      context: ../
+      dockerfile: deployment/Dockerfile.migration
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    environment:
+      - GO_ENVIRONMENT=docker
+    volumes:
+      - ./migrations:/migrations
+    command:
+      ["./migrator", "migrate", "up"]
+
+  app:
     build:
       context: ../
       dockerfile: deployment/Dockerfile
     restart: always
     ports:
-      - '8080:8080' # Adjust the port to match the port your app listens on
+      - '8080:8080'
     depends_on:
+      migrate:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       cache:
@@ -48,12 +66,6 @@ services:
       - cache
     environment:
       - GO_ENVIRONMENT=docker
-      - POSTGRES_USER=rowgame
-      - POSTGRES_PASSWORD=rowgame
-      - POSTGRES_DB=rowgame
-      - POSTGRES_HOST=postgres
-      - REDIS_PASSWORD=crwh1xQGB4s1edByiB0G
-      - REDIS_HOST=cache
 
 volumes:
   redis-cache:

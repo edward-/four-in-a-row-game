@@ -73,7 +73,7 @@ func build() *migrate.Migrate {
 
 	m, err := migrate.NewWithDatabaseInstance(migrationFolder, configuration.Db.DBName, driver)
 	if err != nil {
-		log.Fatal(err)
+		panic(fmt.Sprintf("Could not start sql migration... %v", err))
 	}
 
 	return m

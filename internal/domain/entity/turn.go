@@ -7,7 +7,7 @@ type TurnDTO struct {
 	DropItIn int    `json:"dropItIn"`
 }
 
-type ResponseTurnDTO struct {
+type ResultTurnDTO struct {
 	Resolution vo.Resolution `json:"resolution"`
 	UserId     string        `json:"user_id"`
 }

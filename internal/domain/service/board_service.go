@@ -9,7 +9,7 @@ import (
 )
 
 type BoardService interface {
-	AnalyzePlay(ctx context.Context, game *entity.GameDTO, board *entity.BoardDTO, turn *entity.TurnDTO) (*entity.ResponseTurnDTO, error)
+	AnalyzePlay(ctx context.Context, game *entity.GameDTO, board *entity.BoardDTO, turn *entity.TurnDTO) (*entity.ResultTurnDTO, error)
 }
 
 type boardService struct{}
@@ -18,7 +18,7 @@ func NewBoardService() BoardService {
 	return &boardService{}
 }
 
-func (b *boardService) AnalyzePlay(ctx context.Context, game *entity.GameDTO, board *entity.BoardDTO, turn *entity.TurnDTO) (result *entity.ResponseTurnDTO, err error) {
+func (b *boardService) AnalyzePlay(ctx context.Context, game *entity.GameDTO, board *entity.BoardDTO, turn *entity.TurnDTO) (result *entity.ResultTurnDTO, err error) {
 	result = nextPlayer(game, turn)
 
 	err = addChipToBoard(board, turn)
@@ -38,7 +38,7 @@ func (b *boardService) AnalyzePlay(ctx context.Context, game *entity.GameDTO, bo
 	return result, nil
 }
 
-func nextPlayer(game *entity.GameDTO, turn *entity.TurnDTO) *entity.ResponseTurnDTO {
+func nextPlayer(game *entity.GameDTO, turn *entity.TurnDTO) *entity.ResultTurnDTO {
 	userId := turn.UserId
 	switch userId {
 	case game.UserIds[0]:
@@ -47,7 +47,7 @@ func nextPlayer(game *entity.GameDTO, turn *entity.TurnDTO) *entity.ResponseTurn
 		userId = game.UserIds[0]
 	}
 
-	return &entity.ResponseTurnDTO{
+	return &entity.ResultTurnDTO{
 		Resolution: vo.Resolution_Next,
 		UserId:     userId,
 	}

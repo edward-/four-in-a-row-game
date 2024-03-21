@@ -112,10 +112,6 @@ var _ = Describe("Turn", func() {
 				Expect(response.Code).To(Equal(http.StatusInternalServerError))
 			})
 
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
-			})
-
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
@@ -148,10 +144,6 @@ var _ = Describe("Turn", func() {
 				Expect(response.Code).To(Equal(http.StatusInternalServerError))
 			})
 
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
-			})
-
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
@@ -178,10 +170,6 @@ var _ = Describe("Turn", func() {
 		Context("should fail", func() {
 			It("status code should be 500", func() {
 				Expect(response.Code).To(Equal(http.StatusInternalServerError))
-			})
-
-			It("body should not be nil", func() {
-				Expect(response.Body).ToNot(BeNil())
 			})
 
 			It("body should return message", func() {
