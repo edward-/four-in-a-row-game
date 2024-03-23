@@ -2,13 +2,14 @@ package usecase
 
 import (
 	"context"
-	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
+	"github.com/edward-/four-in-a-row-game/internal/domain/repository"
 )
 
 type GameUsecase interface {
 	CreateGameExecute(ctx context.Context, game *entity.CreateGameDTO) (string, error)
+	GetGameExecute(ctx context.Context, gameId string) (*entity.GameDTO, error)
 }
 
 type gameUsecase struct {

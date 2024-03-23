@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+
 	usecase2 "github.com/edward-/four-in-a-row-game/internal/domain/usecase"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/service"
@@ -29,7 +30,9 @@ func Bootstrap(ctx context.Context) *gin.Engine {
 	router.GET("/ping", h.Ping)
 	v1 := router.Group("v1")
 	v1.POST("/users", h.CreateUser)
+	v1.POST("/users/:userId", h.GetUser)
 	v1.POST("/games", h.CreateGame)
+	v1.GET("/games/:gameId", h.GetGame)
 	v1.GET("/games/:gameId/board", h.GetBoardGame)
 	v1.POST("/games/:gameId/turn", h.Turn)
 

@@ -2,9 +2,11 @@ package handler
 
 import (
 	"context"
-	usecase2 "github.com/edward-/four-in-a-row-game/internal/domain/usecase"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
+	"github.com/edward-/four-in-a-row-game/internal/domain/usecase"
+	httpErrors "github.com/edward-/four-in-a-row-game/internal/interfaces/handler/errors"
+	"github.com/edward-/four-in-a-row-game/internal/interfaces/handler/params"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
 	httpPkg "github.com/edward-/four-in-a-row-game/pkg/http"
 	"github.com/gin-gonic/gin"
@@ -12,15 +14,15 @@ import (
 
 type handler struct {
 	ctx          context.Context
-	userUsecase  usecase2.UserUsecase
-	gameUsecase  usecase2.GameUsecase
-	boardUsecase usecase2.BoardUsecase
+	userUsecase  usecase.UserUsecase
+	gameUsecase  usecase.GameUsecase
+	boardUsecase usecase.BoardUsecase
 }
 
 func NewHandler(ctx context.Context,
-	userUsecase usecase2.UserUsecase,
-	gameUsecase usecase2.GameUsecase,
-	boardUsecase usecase2.BoardUsecase,
+	userUsecase usecase.UserUsecase,
+	gameUsecase usecase.GameUsecase,
+	boardUsecase usecase.BoardUsecase,
 ) Handler {
 	return &handler{
 		ctx:          ctx,
@@ -42,19 +44,35 @@ func (h *handler) CreateUser(c *gin.Context) {
 	userDTO := new(entity.CreateUserDTO)
 
 	if err := c.ShouldBindJSON(userDTO); err != nil {
-		log.Error(err, "body invalid")
-		response.ResposeBadRequest("body invalid")
+		log.Error(err, httpErrors.ErrInvalidRequestBody)
+		response.ResposeBadRequest(httpErrors.ErrInvalidRequestBody)
 		return
 	}
 
 	userId, err := h.userUsecase.CreateUserExecute(h.ctx, userDTO)
 	if err != nil {
-		log.Error(err, "could not create the user")
-		response.ResposeAbortWithMessage(err, "could not create the user")
+		log.Error(err, httpErrors.ErrCreatingUser)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrCreatingUser)
 		return
 	}
 
 	response.ResposeCreatedWithId(userId)
+}
+
+func (h *handler) GetUser(c *gin.Context) {
+	log := contextPkg.LoggerFromCtx(h.ctx)
+	response := httpPkg.NewResponse(c)
+
+	userId := c.Param(params.UserIdKey)
+
+	user, err := h.userUsecase.GetUserExecute(h.ctx, userId)
+	if err != nil {
+		log.Error(err, httpErrors.ErrGettingGame)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrGettingGame)
+		return
+	}
+
+	response.ResposeOKWithJSON(user)
 }
 
 func (h *handler) CreateGame(c *gin.Context) {
@@ -64,30 +82,46 @@ func (h *handler) CreateGame(c *gin.Context) {
 	gameDTO := new(entity.CreateGameDTO)
 
 	if err := c.ShouldBindJSON(gameDTO); err != nil {
-		log.Error(err, "body invalid")
-		response.ResposeBadRequest("body invalid")
+		log.Error(err, httpErrors.ErrInvalidRequestBody)
+		response.ResposeBadRequest(httpErrors.ErrInvalidRequestBody)
 		return
 	}
 
 	gameId, err := h.gameUsecase.CreateGameExecute(h.ctx, gameDTO)
 	if err != nil {
-		log.Error(err, "could not create the game")
-		response.ResposeAbortWithMessage(err, "could not create the game")
+		log.Error(err, httpErrors.ErrCreatingGame)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrCreatingGame)
 		return
 	}
 
 	response.ResposeCreatedWithId(gameId)
 }
 
+func (h *handler) GetGame(c *gin.Context) {
+	log := contextPkg.LoggerFromCtx(h.ctx)
+	response := httpPkg.NewResponse(c)
+
+	gameId := c.Param(params.GameIdKey)
+
+	game, err := h.gameUsecase.GetGameExecute(h.ctx, gameId)
+	if err != nil {
+		log.Error(err, httpErrors.ErrGettingGame)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrGettingGame)
+		return
+	}
+
+	response.ResposeOKWithJSON(game)
+}
+
 func (h *handler) GetBoardGame(c *gin.Context) {
 	log := contextPkg.LoggerFromCtx(h.ctx)
 	response := httpPkg.NewResponse(c)
 
-	gameId := c.Param("gameId")
+	gameId := c.Param(params.GameIdKey)
 	board, err := h.boardUsecase.GetBoardExecute(h.ctx, gameId)
 	if err != nil {
-		log.Error(err, "could not get the board")
-		response.ResposeAbortWithMessage(err, "could not get the board")
+		log.Error(err, httpErrors.ErrGettingBoard)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrGettingBoard)
 		return
 	}
 
@@ -100,17 +134,17 @@ func (h *handler) Turn(c *gin.Context) {
 
 	turnDTO := new(entity.TurnDTO)
 	if err := c.ShouldBindJSON(turnDTO); err != nil {
-		log.Error(err, "body invalid")
-		response.ResposeBadRequest("body invalid")
+		log.Error(err, httpErrors.ErrInvalidRequestBody)
+		response.ResposeBadRequest(httpErrors.ErrInvalidRequestBody)
 		return
 	}
 
-	gameId := c.Param("gameId")
+	gameId := c.Param(params.GameIdKey)
 
 	turn, err := h.boardUsecase.TurnExecute(h.ctx, gameId, turnDTO)
 	if err != nil {
-		log.Error(err, "could not do next move")
-		response.ResposeAbortWithMessage(err, "could not do next move")
+		log.Error(err, httpErrors.ErrExecutingTurn)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrExecutingTurn)
 		return
 	}
 

@@ -46,7 +46,9 @@ Now, you can start playing the game calling some endpoints [I need a cli, in the
 ```
 GET    /ping
 POST   /v1/users
+GET    /v1/users/:userId
 POST   /v1/games
+GET    /v1/games/:gameId
 GET    /v1/games/:gameId/board
 POST   /v1/games/:gameId/turn
 ```
@@ -72,6 +74,7 @@ This project adopts the Clean Architecture principles, ensuring that the game's 
 - [viper](github.com/spf13/viper)
 - [ginkgo](github.com/onsi/ginkgo)
 - [gin](github.com/gin-gonic/gin)
+- [go-swagger](https://goswagger.io/go-swagger/)
 
 ## TODO
 - [ ] Implement swagger documentation
