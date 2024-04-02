@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,7 @@ func (r *response) ResposeCreatedWithId(id string) {
 }
 
 func (r *response) ResposeAbortWithMessage(err error, msg string) {
-	r.c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": msg})
+	r.c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("%s: %s", msg, err.Error())})
 }
 
 func (r *response) ResposeBadRequest(msg string) {

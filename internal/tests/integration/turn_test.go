@@ -115,7 +115,7 @@ var _ = Describe("Turn", func() {
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
-				Expect(jsonResponse["message"]).To(Equal("could not do next move"))
+				Expect(jsonResponse["message"]).To(Equal("error executing turn: user don't belong to game"))
 			})
 		})
 	})
@@ -147,7 +147,7 @@ var _ = Describe("Turn", func() {
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
-				Expect(jsonResponse["message"]).To(Equal("could not do next move"))
+				Expect(jsonResponse["message"]).To(Equal("error executing turn: invalid next turn"))
 			})
 		})
 	})
@@ -175,7 +175,7 @@ var _ = Describe("Turn", func() {
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
-				Expect(jsonResponse["message"]).To(Equal("could not do next move"))
+				Expect(jsonResponse["message"]).To(Equal("error executing turn: added chip exceeds the maximum allowed"))
 			})
 		})
 	})

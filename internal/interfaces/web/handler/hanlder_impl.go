@@ -5,8 +5,8 @@ import (
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
 	"github.com/edward-/four-in-a-row-game/internal/domain/usecase"
-	httpErrors "github.com/edward-/four-in-a-row-game/internal/interfaces/handler/errors"
-	"github.com/edward-/four-in-a-row-game/internal/interfaces/handler/params"
+	httpErrors "github.com/edward-/four-in-a-row-game/internal/interfaces/web/errors"
+	"github.com/edward-/four-in-a-row-game/internal/interfaces/web/handler/params"
 	contextPkg "github.com/edward-/four-in-a-row-game/pkg/context"
 	httpPkg "github.com/edward-/four-in-a-row-game/pkg/http"
 	"github.com/gin-gonic/gin"
@@ -67,8 +67,8 @@ func (h *handler) GetUser(c *gin.Context) {
 
 	user, err := h.userUsecase.GetUserExecute(h.ctx, userId)
 	if err != nil {
-		log.Error(err, httpErrors.ErrGettingGame)
-		response.ResposeAbortWithMessage(err, httpErrors.ErrGettingGame)
+		log.Error(err, httpErrors.ErrGettingUser)
+		response.ResposeAbortWithMessage(err, httpErrors.ErrGettingUser)
 		return
 	}
 

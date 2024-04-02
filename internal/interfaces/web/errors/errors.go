@@ -6,7 +6,8 @@ var (
 	ErrCreatingGame  = "error creating game"
 	ErrCreatingUser  = "error creating user"
 	ErrCreatingBoard = "error creating board"
+	ErrGettingBoard  = "error getting board"
 	ErrGettingGame   = "error getting game"
-	ErrGettingBoard  = "error getting user"
+	ErrGettingUser   = "error getting user"
 	ErrExecutingTurn = "error executing turn"
 )

@@ -3,7 +3,7 @@ package entity
 import vo "github.com/edward-/four-in-a-row-game/internal/domain/value_object"
 
 type TurnDTO struct {
-	UserId   string `json:"userId" binding:"required,uuid4"`
+	UserId   string `json:"userId" binding:"required"`
 	DropItIn int    `json:"dropItIn"`
 }
 

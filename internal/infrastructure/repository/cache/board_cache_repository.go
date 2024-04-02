@@ -80,7 +80,7 @@ func (u *boardRepository) SetNextTurn(ctx context.Context, gameId string, userId
 	return nil
 }
 
-func (u *boardRepository) GetNextTurn(ctx context.Context, gameId string) (string, error) {
+func (u *boardRepository) GetTurn(ctx context.Context, gameId string) (string, error) {
 	cache := contextPkg.CacheFromCtx(ctx)
 
 	bytes, err := cache.Get(ctx, gameId+"_next").Bytes()

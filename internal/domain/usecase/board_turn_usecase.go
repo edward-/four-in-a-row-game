@@ -13,7 +13,7 @@ func (uc *boardUsecase) TurnExecute(ctx context.Context, gameId string, turn *en
 	response := &entity.ResultTurnDTO{}
 
 	err := transaction.NewTransaction(ctx, func(ctx context.Context) (err error) {
-		err = uc.getAndValidateNextTurn(ctx, gameId, turn)
+		err = uc.getAndValidateCurrentTurn(ctx, gameId, turn)
 		if err != nil {
 			return err
 		}
@@ -33,8 +33,8 @@ func (uc *boardUsecase) TurnExecute(ctx context.Context, gameId string, turn *en
 	return response, err
 }
 
-func (uc *boardUsecase) getAndValidateNextTurn(ctx context.Context, gameId string, turn *entity.TurnDTO) error {
-	nextUserId, err := uc.boardRepository.GetNextTurn(ctx, gameId)
+func (uc *boardUsecase) getAndValidateCurrentTurn(ctx context.Context, gameId string, turn *entity.TurnDTO) error {
+	nextUserId, err := uc.boardRepository.GetTurn(ctx, gameId)
 	if err != nil {
 		return err
 	}
@@ -73,6 +73,11 @@ func (uc *boardUsecase) processGame(ctx context.Context, game *entity.GameDTO, t
 	}
 
 	result, err := uc.boardService.AnalyzePlay(ctx, game, board, turn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = uc.boardRepository.Save(ctx, game.Id, board, vo.ActiveGame)
 	if err != nil {
 		return nil, err
 	}

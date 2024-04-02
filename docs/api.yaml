@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  title: 4 in a row [game]
+  description: The objective of the game is for players to take turns dropping colored discs from the top into a column. The first player to form a horizontal, vertical, or diagonal line of four of their own discs wins the game. The game ends in a draw if the board is filled without any player achieving this.
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/v1
+    description: Local
+  - url: http://staging-api.example.com
+    description: example staging
+paths:
+  /users:
+    post:
+      summary: create an user.
+      description: create an user with nickname and email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/createUserRequest"
+      responses:
+        '200':
+          description: Returns user id.
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/responseId"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+  /users/{userId}:
+    get:
+      summary: Returns a user given its id.
+      description: return details of a user.
+      parameters:
+        - $ref: "#components/parameters/userId"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/userResponse"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+  /games:
+    post:
+      summary: create a game.
+      description: create a game.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/createGameRequest"
+      responses:
+        '200':
+          description: Returns game id.
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/responseId"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+  /games/{gameId}:
+    get:
+      summary: Returns a game given its id.
+      description: return details of a game.
+      parameters:
+        - $ref: "#components/parameters/gameId"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/gameResponse"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+  /games/{gameId}/board:
+    get:
+      summary: Returns the status of the board.
+      description: return details of the current game.
+      parameters:
+        - $ref: "#components/parameters/gameId"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/boardResponse"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+  /games/{gameId}/turn:
+    post:
+      summary: Make next move.
+      description: make next move.
+      parameters:
+        - $ref: "#components/parameters/gameId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/turnRequest"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: 
+                $ref: "#components/schemas/turnResponse"
+        '400':
+          $ref: "#components/responses/badRequest"
+        '404':
+          $ref: "#components/responses/notFound"
+        default:
+          description: Unexpected error
+components:
+  schemas:
+    responseId:
+      type: object
+      properties:
+        id:
+          type: string
+    createUserRequest:
+      type: object
+      properties:
+        nickName:
+          type: string
+        email:
+          type: string
+    userResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+        createdAt:
+          tpye: integer
+    createGameRequest:
+      type: object
+      properties:
+        userId1:
+          type: string
+        userId2:
+          type: string
+    gameResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        userIds:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [Incompleted, Success, InProgress]
+        result:
+          type: object
+          properties:
+            id:
+              type: string
+            result:
+              type: string
+              enum: [Tie, Winner, Unknown]
+        completedAt:
+          type: integer
+    boardResponse:
+      type: object
+      properties:
+        squares:
+          type: array
+          items: 
+            type: array
+            items:
+              type: string
+    turnRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        dropItIn:
+          type: integer
+    turnResponse:
+      type: object
+      properties:
+        resolution:
+          type: string
+          enum: [Winner, Tie, Next]
+        userId:
+          type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      description: The ID of the user to return.
+      schema:
+        type: string
+        minimum: 1
+    gameId:
+      name: gameId
+      in: path
+      required: true
+      description: The ID of the game to return.
+      schema:
+        type: string
+        minimum: 1
+  responses:
+    badRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    notFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+

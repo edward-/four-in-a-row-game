@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/edward-/four-in-a-row-game/internal/domain/entity"
 	"github.com/edward-/four-in-a-row-game/pkg/transaction"
@@ -12,6 +13,9 @@ func (u *userUsecase) GetUserExecute(ctx context.Context, userId string) (user *
 		users, err := u.userRepository.GetUsersByIds(ctx, []string{userId})
 		if err != nil {
 			return err
+		}
+		if len(users) == 0 {
+			return errors.New("user not found")
 		}
 
 		user = users[0]

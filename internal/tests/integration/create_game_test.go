@@ -95,7 +95,7 @@ var _ = Describe("CreateGame", func() {
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
-				Expect(jsonResponse["message"]).To(Equal("could not create the game"))
+				Expect(jsonResponse["message"]).To(Equal("error creating game: invalid users"))
 			})
 		})
 	})
@@ -121,7 +121,7 @@ var _ = Describe("CreateGame", func() {
 			It("body should return message", func() {
 				var jsonResponse map[string]any
 				json.Unmarshal(response.Body.Bytes(), &jsonResponse)
-				Expect(jsonResponse["message"]).To(Equal("body invalid"))
+				Expect(jsonResponse["message"]).To(Equal("invalid request body"))
 			})
 		})
 	})
