@@ -53,6 +53,14 @@ GET    /v1/games/:gameId/board
 POST   /v1/games/:gameId/turn
 ```
 
+Or use the swagger documentation in: 
+
+```
+Local = http://localhost:8080/docs
+Stagging = [working on]-staging.com
+production = [wordking on]-prod.com
+```
+
 ## Architecture
 
 This project adopts the Clean Architecture principles, ensuring that the game's design is independent of frameworks, UI, and databases. By segregating the system into layers (Domain, Infrastructure, Interface Adapters, and Frameworks & Drivers), we enhance maintainability, scalability, and the potential for future feature expansions. This architectural choice facilitates unit testing and decouples business logic from device-specific implementations.
@@ -77,7 +85,7 @@ This project adopts the Clean Architecture principles, ensuring that the game's 
 - [go-swagger](https://goswagger.io/go-swagger/)
 
 ## TODO
-- [ ] Implement swagger documentation
+- [x] Implement swagger documentation
 - [ ] Deploy to AWS in a lambda function with terraform
 - [ ] Validate tests with github-actions
 - [ ] Implement AI opponent with varying difficulty levels.
