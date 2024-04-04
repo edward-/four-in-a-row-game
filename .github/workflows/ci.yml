@@ -62,4 +62,4 @@ jobs:
           context: .
           file: deployment/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:latest,${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:${{ github.sha }}
