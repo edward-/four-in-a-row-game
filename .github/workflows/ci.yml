@@ -9,7 +9,8 @@ on:
 
 
 jobs:
-  test:
+  tests:
+    name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -37,29 +38,66 @@ jobs:
       if: always()
       run: docker-compose -f ./deployment/docker-compose.yaml down
 
-  deploy:
-    name: build && push image to docker hub
-    needs: [test]
+  build:
+    name: Build & Push
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: 'main'
+    needs: tests
+    environment: ecr-4inarow-game
     
-      - name: setup docker buildx
-        uses: docker/setup-buildx-action@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
 
-      - name: docker login
-        uses: docker/login-action@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2.0.1
+        id: login-ecr
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build, tag and Push image to Amazon ECR
+        id: build-and-tag-docker-image
+        working-directory: ./
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
+          IMAGE_TAG: git-${{ steps.vars.outputs.sha_short }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --file deployment/Dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "IMAGE_URI=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
+
+  # deploy:
+  #   name: build && push image to docker hub
+  #   needs: [test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: 'main'
+    
+  #     - name: setup docker buildx
+  #       uses: docker/setup-buildx-action@v2
+
+  #     - name: docker login
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: build and push api
-        id: build-push-api
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: deployment/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:latest,${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:${{ github.sha }}
+  #     - name: build and push api
+  #       id: build-push-api
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         context: .
+  #         file: deployment/Dockerfile
+  #         push: true
+  #         tags: ${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:latest,${{ secrets.DOCKERHUB_USERNAME }}/for-in-a-row-game:${{ github.sha }}

@@ -1,5 +1,10 @@
+.DS_Store
 .idea
 .vscode
 config/config.prod.yaml
 config/config.staging.yaml
 config/config.yaml
+
+**/.infracost/*
+**/.terraform/*
+**/.terraform.lock.hcl
