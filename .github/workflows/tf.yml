@@ -33,7 +33,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -var db_username="${{ secrets.DB_USERNAME }}" -var db_password="${{ secrets.DB_PASSWORD }}" -var my_ip="${{ secrets.MY_IP }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: 'tf'
@@ -68,7 +68,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -var db_username="${{ secrets.DB_USERNAME }}" -var db_password="${{ secrets.DB_PASSWORD }}" -var my_ip="${{ secrets.MY_IP }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: 'tf'

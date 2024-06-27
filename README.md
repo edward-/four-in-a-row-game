@@ -86,8 +86,10 @@ This project adopts the Clean Architecture principles, ensuring that the game's 
 
 ## TODO
 - [x] Implement swagger documentation
-- [ ] Deploy to AWS in a lambda function with terraform
 - [x] Validate tests with github-actions
+- [x] Terraform
+- [x] Create CI/CD with github actions
+- [ ] Deploy image to EC2
 - [ ] Implement AI opponent with varying difficulty levels.
 - [ ] Add cli functionality.
 - [ ] Create a graphical user interface (GUI) version using a Go-based GUI library like Fyne.

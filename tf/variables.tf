@@ -83,15 +83,22 @@ variable "db_name" {
 
 variable "db_username" {
   description = "The PostgreSQL username"
-  default     = "rowgame"
+  type        = string
+  sensitive   = true
 }
 
 variable "db_password" {
   description = "The PostgreSQL password"
-  default     = "rowgame"
+  type        = string
+  sensitive   = true
 }
 
 variable "app_name" {
   description = "Application name"
   default = "4InARowGameApp"
+}
+
+variable "app_environment" {
+  description = "Environment"
+  default = "dev" 
 }
